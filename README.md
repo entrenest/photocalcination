@@ -19,18 +19,22 @@ Once the Tamman temperature has been exceeded, vibrations cause the crystal latt
 
 The bond energy within a molecular vibration is not continuous, rather it is quantized. Thus, molecules only stretch and bend at certain, discrete, “allowed” frequencies of molecular oscillation (vibration) [14]. If a molecule has a vibrational frequency (eigenstate) which matches the resonant frequency of the photon, the molecule will most likely adsorb energy from the photon and jump to a higher vibrational energy state in accordance with electron selection rules, the Franck-Condon Principle, et al. This does not modify the vibrational frequency of the molecule, but rather increases the amplitude of that vibration [14].
 
-References
+*References*
 
 [1] K. Gordiz, S. Muy, W. G. Zeier, Y. Shao-Horn and A. Henry, "Enhancement of ion diffusion
 by targeted phonon excitation," Cell Reports Physical Science, vol. Volume 2, no. Issue 5,
 pp. 2666 -3864, 19 May 2021.
+
 [6] M. Erans, V. Manovic and E. J. Anthony, "Calcium looping sorbents for CO2 capture,"
 Applied Energy, vol. 180, pp. 722 - 742, 15 October 2016.
+
 [7] N. McQueen, K. V. Gomes, C. McCormick, K. Blumanthal, M. Pisciotta and a. J. Wilcox,
 "A review of direct air capture (DAC): scaling up commercial technologies and innovating
 for the future," Progress in Energy, vol. 3, no. 3, p. 032001, 16 April 2021.
+
 [9] A. Al-Mamoori, S. Lawson, A. A. Rownaghi and F. Rezaei, "Improving Adsorptive
 Performance of CaO for High-Temperature CO2 Capture through Fe and Ga Doping,"
 Energy Fuels, vol. 33, no. 2, pp. 1404 - 1413, 14 January 2019.
+
 [14] T. Soderberg, Organic Chemistry With a Biological Emphasis, St. Paul, Minnesota:
 LibreText Chemistry, 2016, p. 20.2.1.
