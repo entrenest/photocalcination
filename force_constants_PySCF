@@ -1,0 +1,80 @@
+from pyscf import gto, scf, grad
+import yaml
+from phonopy import Phonopy
+from phonopy.interface import vasp
+
+# Function to generate a Mole object and lattice from a CIF file
+def generate_unit_cell_from_cif(cif_filename):
+    # Import CIFParser from pymatgen
+    from pymatgen.io.cif import CifParser
+    
+    # Parse CIF file and extract structure information
+    parser = CifParser(cif_filename)
+    structure = parser.get_structures()[0]
+    
+    # Extract unit cell information
+    lattice = structure.lattice
+    atom_symbols = [site.specie.symbol for site in structure.sites]
+    atom_positions = [site.frac_coords for site in structure.sites]
+    
+    # Create Mole object
+    mol = gto.Mole()
+    mol.atom = []
+    
+    # Add atoms to the Mole object
+    for symbol, position in zip(atom_symbols, atom_positions):
+        mol.atom.append((symbol, tuple(position)))
+    
+    # Set unit cell dimensions
+    mol.unit = "Angstrom"
+    mol.a, mol.b, mol.c = lattice.abc
+    mol.build()
+    
+    return mol, lattice
+
+# Function to calculate forces on atoms
+def calculate_forces(unit_cell):
+    # Perform SCF calculation
+    mf = scf.RHF(unit_cell)
+    mf.verbose = 4  # Increase verbosity of the SCF calculation
+    mf.kernel()
+    
+    # Calculate the forces on atoms
+    grad_obj = grad.RHF(mf)
+    forces = grad_obj.kernel()
+    
+    return forces
+
+# Set the paths and filenames
+cif_filename = 'CaCO3_mp-1079918_computed.cif'
+force_filename = 'forces.yaml'
+phonon_yaml_filename = 'phonon.yaml'
+
+# Generate unit cell from CIF file
+print("Generating unit cell from CIF file...")
+unit_cell, lattice = generate_unit_cell_from_cif(cif_filename)
+print("Unit cell generated successfully.\n")
+
+# Calculate forces on atoms
+print("Calculating forces on atoms...")
+forces = calculate_forces(unit_cell)
+forces = forces.tolist()  # Convert NumPy array to Python list
+print("Forces calculated successfully.\n")
+
+# Save forces to a YAML file
+print(f"Saving forces to {force_filename}...")
+with open(force_filename, 'w') as yaml_file:
+    yaml.dump(forces, yaml_file)
+print(f"Forces saved to {force_filename}.\n")
+
+# Phonopy calculations
+print("Performing Phonopy calculations...")
+phonon_structure = vasp.read_vasp(cif_filename)
+supercell = [[2, 0, 0], [0, 2, 0], [0, 0, 2]]  # Define the supercell size
+phonon = Phonopy(phonon_structure, supercell)
+phonon.generate_displacements(distance=0.01)  # Generate atomic displacements
+phonon.produce_force_constants()  # Calculate force constants
+phonon.write_yaml(phonon_yaml_filename)  # Save phonon data to YAML file
+print(f"Phonopy calculations completed. Phonon data saved to {phonon_yaml_filename}.\n")
+
+print("Forces calculated and saved. Phonopy calculations completed.")
