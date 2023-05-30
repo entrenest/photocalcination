@@ -1,6 +1,6 @@
 import numpy as np
-
-import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 # Define the unit cell parameters
 a = 3.83002900
@@ -31,22 +31,60 @@ atom_positions = np.array([
     [0.72355500, 0.71477600, 0.10202900],  # Oxygen 6
 ])
 
-# Plot the unit cell
-from pymatgen.vis.plot import show
-show(unit_cell, representation='unitcell', ax=None, show_unit_cell=True, show_bonds=True, show_atoms=True, atom_size=200, bond_radius=1.5)
+# Define colors for each chemical
+chemical_colors = {
+    'Ca': 'red',
+    'C': 'gray',
+    'O': 'blue'
+}
 
-# Reference
-# https://en.wikipedia.org/wiki/Calcium_carbonate
+# Define angles and zoom levels for multiple plots
+plot_configurations = [
+    {'elev': 10, 'azim': -20, 'zoom_factor': 0.8},
+    {'elev': 30, 'azim': 30, 'zoom_factor': 0.8},
+    {'elev': 60, 'azim': 120, 'zoom_factor': 0.8}
+]
 
-# Justify decision
-# The unit cell parameters and atomic positions were taken from the Wikipedia article on Calcium Carbonate. The unit cell parameters are consistent with the values reported in other sources, such as the International Tables for Crystallography. The atomic positions are also consistent with the crystal structure of Calcium Carbonate, which is a trigonal bipyramid.
+# Generate multiple plots
+for i, config in enumerate(plot_configurations):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
 
-# Plot the unit cell
-from pymatgen.vis.plot import show
-show(unit_cell, representation='unitcell', ax=None, show_unit_cell=True, show_bonds=True, show_atoms=True, atom_size=200, bond_radius=1.5)
+    # Plot unit cell vectors
+    for vec in unit_cell:
+        ax.plot([0, vec[0]], [0, vec[1]], [0, vec[2]], 'k-')
 
-# Reference
-# https://en.wikipedia.org/wiki/Calcium_carbonate
+    # Plot atom positions with respective colors
+    for j, pos in enumerate(atom_positions):
+        if j < 2:
+            chemical = 'Ca'
+        elif j < 4:
+            chemical = 'C'
+        else:
+            chemical = 'O'
+        color = chemical_colors[chemical]
+        ax.scatter(pos[0], pos[1], pos[2], c=color, s=200, label=chemical)
 
-# Justify decision
-# The unit cell parameters and atomic positions were taken from the Wikipedia article on Calcium Carbonate. The unit cell parameters are consistent with the values reported in other sources, such as the International Tables for Crystallography. The atomic positions are also consistent with the crystal structure of Calcium Carbonate, which is a trigonal bipyramid.
+    # Set plot labels
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+
+    # Set plot limits and zoom level
+    zoom_factor = config['zoom_factor']
+    ax.set_xlim([0, a * zoom_factor])
+    ax.set_ylim([0, b * zoom_factor])
+    ax.set_zlim([0, c * zoom_factor])
+
+    # Set plot view angles
+    ax.view_init(elev=config['elev'], azim=config['azim'])
+
+    # Show legend
+    ax.legend()
+
+    # Set plot title
+    title = f'Plot {i+1}'
+    ax.set_title(title)
+
+    # Show the plot
+    plt.show()
